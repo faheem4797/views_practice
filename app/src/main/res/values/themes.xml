@@ -6,4 +6,11 @@
     </style>
 
     <style name="Theme.ViewsPractice" parent="Base.Theme.ViewsPractice" />
+
+    <style name="Theme.AppCompat.SplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/yellow</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/zombatar</item>
+        <item name="postSplashScreenTheme">@style/Base.Theme.ViewsPractice</item>
+    </style>
+
 </resources>
