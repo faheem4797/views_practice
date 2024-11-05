@@ -1,14 +1,13 @@
 package com.example.viewspractice
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.widget.Button
-import androidx.activity.enableEdgeToEdge
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.ListView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,19 +16,25 @@ class MainActivity : AppCompatActivity() {
         Thread.sleep(3000)
         installSplashScreen()
         setContentView(R.layout.activity_main)
-        val explicitButton = findViewById<Button>(R.id.btnExplicitButton)
+       val listView : ListView = findViewById(R.id.listView)
+        val listItems = arrayOf<String>(
+            "Read a book",
+            "Exercise",
+            "Code",
+            "Go for Shopping",
+            "Eat 3 times"
+        )
 
-        explicitButton.setOnClickListener{
-            val explicitIntent = Intent(this, SecondActivity::class.java)
-            startActivity(explicitIntent)
-            finish()
+        val arrayAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1,listItems)
+        listView.adapter = arrayAdapter
+
+        listView.setOnItemClickListener{ parent: AdapterView<*>, view2: View, position: Int, id: Long ->
+            val selectedItem = parent.getItemAtPosition(position) as String
+            Toast.makeText(this, "Clicked on $selectedItem" , Toast.LENGTH_SHORT).show()
+
         }
 
-        val url = "https://www.google.com"
-        val implicitButton = findViewById<Button>(R.id.btnImplicitButton)
-        implicitButton.setOnClickListener {
-            val implicitIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            startActivity((implicitIntent))
-        }
+
+
     }
 }
