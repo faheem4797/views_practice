@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -13,9 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var dataList: ArrayList<RecycleViewDataClass>
-    lateinit var titleList: Array<String>
+    private lateinit var spinner: Spinner
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,39 +24,36 @@ class MainActivity : AppCompatActivity() {
         installSplashScreen()
         setContentView(R.layout.activity_main)
 
-        titleList = arrayOf(
-            "Array One",
-            "Array Two",
-            "Array Three",
-            "Array Four",
-            "Array Five",
-            "Array Six",
-            "Array Seven",
-            "Array One",
-            "Array Two",
-            "Array Three",
-            "Array Four",
-            "Array Five",
-            "Array Six",
-            "Array Seven"
+        spinner = findViewById(R.id.spinner)
+        val listItem = listOf(
+            "Chocolate", "Strawberry",
+            "Mango", "Banana"
         )
+        val arrayAdapter = ArrayAdapter(this,
+            android.R.layout.simple_spinner_item, listItem
+            )
 
-        recyclerView = findViewById(R.id.recycleView)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.setHasFixedSize(true)
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-        dataList = arrayListOf<RecycleViewDataClass>()
-        getData()
+        spinner.adapter = arrayAdapter
 
+        spinner.onItemSelectedListener = object  : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val selectedItem = parent?.getItemAtPosition(position).toString()
+                Toast.makeText(this@MainActivity, "Clicked on $selectedItem", Toast.LENGTH_SHORT).show()
 
+            }
 
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                Toast.makeText(this@MainActivity, "Nothing Selected", Toast.LENGTH_SHORT).show()
 
-    }
-   private fun getData(){
-        for (i in titleList.indices){
-            val dataClass =  RecycleViewDataClass(titleList[i])
-            dataList.add(dataClass)
+            }
+
         }
-        recyclerView.adapter = AdapterClass(dataList)
+
+
+
+
     }
+
 }
