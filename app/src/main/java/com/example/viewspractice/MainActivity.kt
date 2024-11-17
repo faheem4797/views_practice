@@ -1,57 +1,55 @@
 package com.example.viewspractice
 
+import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.ListView
-import android.widget.Spinner
-import android.widget.Toast
+import android.widget.EditText
+
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var spinner: Spinner
+    private lateinit var textName : EditText
+    private lateinit var textAge : EditText
+    private lateinit var sf: SharedPreferences
+    private  lateinit var editor: SharedPreferences.Editor
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        enableEdgeToEdge()
-        Thread.sleep(3000)
+
         installSplashScreen()
         setContentView(R.layout.activity_main)
+        textName = findViewById(R.id.etName)
+        textAge =findViewById(R.id.etAge)
+        sf = getSharedPreferences("my_sf", MODE_PRIVATE)
+        editor = sf.edit()
 
-        spinner = findViewById(R.id.spinner)
-        val listItem = listOf(
-            "Chocolate", "Strawberry",
-            "Mango", "Banana"
-        )
-        val arrayAdapter = ArrayAdapter(this,
-            android.R.layout.simple_spinner_item, listItem
-            )
+    }
 
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+    override fun onPause() {
 
-        spinner.adapter = arrayAdapter
+        super.onPause()
+        val name = textName.text.toString()
+        val age = textAge.text.toString().toInt()
 
-        spinner.onItemSelectedListener = object  : AdapterView.OnItemSelectedListener{
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val selectedItem = parent?.getItemAtPosition(position).toString()
-                Toast.makeText(this@MainActivity, "Clicked on $selectedItem", Toast.LENGTH_SHORT).show()
-
-            }
-
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-                Toast.makeText(this@MainActivity, "Nothing Selected", Toast.LENGTH_SHORT).show()
-
-            }
-
+        editor.apply {
+            putString("sf_name", name)
+            putInt("sf_age",age)
+            commit()
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
+        val name = sf.getString("sf_name", null)
+        val age = sf.getInt("sf_age", 0)
 
+        textName.setText(name)
+        if(age != 0){
+            textAge.setText(age.toString())
+        }
 
 
     }
