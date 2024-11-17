@@ -2,6 +2,17 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.ViewsPractice" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="colorPrimary">@color/yellow</item>
+        <item name="colorPrimaryVariant">@color/layout_background</item>
+        <item name="colorPrimaryDark">@color/layout_background</item>
+<!--        <item name="android:statusBarColor">@color/yellow</item>-->
+    </style>
+
+    <style name="Theme.ViewsPractice" parent="Base.Theme.ViewsPractice" />
+
+    <style name="Theme.AppCompat.SplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/yellow</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/zombatar</item>
+        <item name="postSplashScreenTheme">@style/Base.Theme.ViewsPractice</item>
     </style>
 </resources>
