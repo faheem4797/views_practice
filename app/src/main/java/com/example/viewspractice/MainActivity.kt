@@ -1,18 +1,32 @@
 package com.example.viewspractice
 
+import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import org.w3c.dom.Text
 import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
+
+    private var mediaPlayer: MediaPlayer? = null
+    private  lateinit var seekBar: SeekBar
+    private lateinit var runnable: Runnable
+    private  lateinit var handler: Handler
+
+
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,87 +36,72 @@ class MainActivity : AppCompatActivity() {
         installSplashScreen()
         setContentView(R.layout.activity_main)
 
-        val weightText = findViewById<EditText>(R.id.etWeight)
-        val heightText = findViewById<EditText>(R.id.etHeight)
-        val calcButton = findViewById<Button>(R.id.btnCalculate)
 
-        calcButton.setOnClickListener {
+        seekBar = findViewById(R.id.sbClap)
+        handler = Handler(Looper.getMainLooper())
 
-            val view: View? = this.currentFocus
-            if (view != null) {
-                view.clearFocus()
-                val inputMethodManager =
-                    getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+        val btnPlay = findViewById<FloatingActionButton>(R.id.fabPlay)
+        val btnPause = findViewById<FloatingActionButton>(R.id.fabPause)
+        val btnStop = findViewById<FloatingActionButton>(R.id.fabStop)
+        val tvPlayed = findViewById<TextView>(R.id.tvPlayed)
+        val tvDue = findViewById<TextView>(R.id.tvDue)
+
+        btnPlay.setOnClickListener {
+            if(mediaPlayer == null){
+                mediaPlayer = MediaPlayer.create(this, R.raw.clap)
+                initializeSeekBar()
             }
-
-            val weight = weightText.text.toString()
-            val height = heightText.text.toString()
-
-            if (validateInput(weight, height)) {
-
-                val bmi = weight.toFloat() / ((height.toFloat() / 100) * (height.toFloat() / 100))
-                val bmiShort = String.format(Locale.getDefault(), "%.2f", bmi).toFloat()
-                displayResult(bmiShort)
-            }
-
+            mediaPlayer?.start()
         }
+        btnPause.setOnClickListener {
+            mediaPlayer?.pause()
+        }
+        btnStop.setOnClickListener {
+            mediaPlayer?.stop()
+            mediaPlayer?.reset()
+            mediaPlayer?.release()
+            mediaPlayer = null
+            handler.removeCallbacks(runnable)
+            seekBar.progress = 0
 
-
-    }
-
-    private fun validateInput(weight: String, height: String): Boolean {
-        when {
-            weight.isEmpty() -> {
-                Toast.makeText(this, "Please enter a valid weight", Toast.LENGTH_SHORT).show()
-                return false
-            }
-            height.isEmpty() -> {
-                Toast.makeText(this, "Please enter a valid height", Toast.LENGTH_SHORT).show()
-                return false
-            }
-            else -> {
-                return true
-            }
+            tvPlayed.text = ""
+            tvDue.text = ""
         }
     }
 
-    private fun displayResult(bmi: Float) {
-        val bmiNumber = findViewById<TextView>(R.id.tvBmiNumber)
-        val bmiDescription = findViewById<TextView>(R.id.tvBmiDescription)
-        val bmiInfo = findViewById<TextView>(R.id.tvBmiInfo)
-
-        bmiNumber.text = bmi.toString()
-        bmiInfo.text = "Normal range is 18.5 - 24.9"
-
-        var resultText = ""
-        var color = 0
-
-        when {
-            bmi < 18.50 -> {
-                resultText = "Underweight"
-                color = R.color.under_weight
+    private fun initializeSeekBar(){
+        seekBar.setOnSeekBarChangeListener(object  : SeekBar.OnSeekBarChangeListener{
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                if(fromUser) mediaPlayer?.seekTo(progress)
             }
 
-            bmi in 18.50..24.99 -> {
-                resultText = "Healthy"
-                color = R.color.normal
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                TODO("Not yet implemented")
             }
 
-            bmi in 25.00..29.99 -> {
-                resultText = "Overweight"
-                color = R.color.over_weight
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                TODO("Not yet implemented")
             }
 
-            else -> {
-                resultText = "Obese"
-                color = R.color.obese
-            }
         }
+        )
 
-        bmiDescription.text = resultText
-        bmiDescription.setTextColor(ContextCompat.getColor(this, color))
 
+        val tvPlayed = findViewById<TextView>(R.id.tvPlayed)
+        val tvDue = findViewById<TextView>(R.id.tvDue)
+        seekBar.max = mediaPlayer!!.duration
+        runnable = Runnable {
+            seekBar.progress = mediaPlayer!!.currentPosition
+            val playedTime = mediaPlayer!!.currentPosition/1000
+            tvPlayed.text = "$playedTime sec"
+
+            val duration = mediaPlayer!!.duration/1000
+            val dueTime = duration - playedTime
+            tvDue.text = "$dueTime sec"
+
+            handler.postDelayed(runnable, 100)
+        }
+        handler.postDelayed(runnable,100)
     }
 
 
