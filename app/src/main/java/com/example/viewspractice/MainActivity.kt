@@ -1,17 +1,25 @@
 package com.example.viewspractice
 
+import android.graphics.Color
 import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
 
 
-    private lateinit var countViewModel: CountViewModel
+    val fruitsList = listOf<Fruit>(
+        Fruit("apple", "faheem"),
+        Fruit("mango", "pheem"),
+        Fruit("pear", "neem"),
+        Fruit("peach", "peem"),
+        Fruit("banana", "bheem"),
+        Fruit("orange", "jeem"),
+        Fruit("apricot", "reem"),
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,20 +28,19 @@ class MainActivity : AppCompatActivity() {
         installSplashScreen()
         setContentView(R.layout.activity_main)
 
-        countViewModel = ViewModelProvider(this)[CountViewModel::class.java]
-
-        val countButton = findViewById<Button>(R.id.btnAddCount)
-        val countTextView = findViewById<TextView>(R.id.tvCount)
-
-        countViewModel.count.observe(this, {
-            countTextView.text = it.toString()
-        })
-
-        countButton.setOnClickListener {
-            countViewModel.increment()
-
+        val recyclerViewWidget = findViewById<RecyclerView>(R.id.rvList)
+        recyclerViewWidget.setBackgroundColor(Color.YELLOW)
+        recyclerViewWidget.layoutManager = LinearLayoutManager(this)
+        recyclerViewWidget.adapter = MyRecyclerViewAdapter(fruitsList
+        ) { selectedItem: Fruit ->
+            displayToastForFruits(selectedItem)
         }
 
+
+    }
+
+    private fun displayToastForFruits(fruit: Fruit){
+        Toast.makeText(this, "${fruit.name} is supplied by ${fruit.supplier}" , Toast.LENGTH_SHORT).show()
     }
 
 }
