@@ -2,10 +2,9 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.ViewsPractice" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
-        <item name="colorPrimary">@color/yellow</item>
-        <item name="colorPrimaryVariant">@color/layout_background</item>
-        <item name="colorPrimaryDark">@color/layout_background</item>
-<!--        <item name="android:statusBarColor">@color/yellow</item>-->
+        <item name="colorPrimary">@color/grey2</item>
+        <item name="colorPrimaryVariant">@color/grey1</item>
+        <item name="colorOnPrimary">@color/white</item>
     </style>
 
     <style name="Theme.ViewsPractice" parent="Base.Theme.ViewsPractice" />
