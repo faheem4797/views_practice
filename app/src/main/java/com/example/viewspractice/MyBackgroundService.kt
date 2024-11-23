@@ -12,6 +12,9 @@ class MyBackgroundService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.i(TAG, "Service is starting.....")
+        val name = intent?.getStringExtra(NAME)
+        val marks = intent?.getIntExtra(MARKS,0)
+        Log.i(TAG,"Name is $name, marks are $marks")
         return START_STICKY
     }
 
@@ -24,5 +27,7 @@ class MyBackgroundService : Service() {
 
     companion object {
         const val TAG = "pheeem"
+        const val NAME = "NAME"
+        const val MARKS = "TOTAL MARKS"
     }
 }
