@@ -1,9 +1,15 @@
 package com.example.viewspractice
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
@@ -16,6 +22,10 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+    private val channelID = "com.example.viewspractice.demoNotification"
+
+    private lateinit var notificationManager : NotificationManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        enableEdgeToEdge()
@@ -25,46 +35,40 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        retService = RetrofitInstance.getRetrofit().create(AlbumService::class.java)
+        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        requestWithQueryParameter()
-        requestWithPathParameter()
+        createNotificationChannel(channelID, "DemoChannel" , "Demo Notification Channel")
 
-    }
-
-    private fun requestWithQueryParameter(){
-        val responseLiveData : LiveData<Response<Album>>  = liveData {
-            val response = retService.getSortedAlbums(6)
-            emit(response)
+        binding.btnNotification.setOnClickListener {
+            displayNotification()
         }
 
-        responseLiveData.observe(this, {
-            val albumsList = it.body()?.listIterator()
-            if(albumsList != null){
-                while (albumsList.hasNext()){
-                    val albumItem = albumsList.next()
-                    val result = " " + "Album Title : ${albumItem.title}" + "\n" +
-                            " " + "Album id : ${albumItem.id}" + "\n" +
-                            " " + "User id : ${albumItem.userId}" + "\n\n\n"
-                    binding.tvAlbums.append(result)
-                }
-            }
-        })
+
+
+
+
     }
 
-    private fun requestWithPathParameter(){
-        val pathResponse : LiveData<Response<AlbumItem>> = liveData {
-            val response = retService.getSingleAlbumItem(3)
-            emit(response)
+    private fun createNotificationChannel(id : String, name: String, channelDescription: String){
+        val importance = NotificationManager.IMPORTANCE_HIGH
+        val channel = NotificationChannel(id,name, importance).apply {
+             description = channelDescription
         }
-
-        pathResponse.observe(this, {
-            val title = it.body()?.title
-            Toast.makeText(applicationContext, "album title is $title", Toast.LENGTH_SHORT).show()
-        })
+        notificationManager.createNotificationChannel(channel)
     }
 
+    private fun displayNotification(){
+        val notificationId = 48
+        val notification = NotificationCompat.Builder(this@MainActivity,channelID)
+            .setContentTitle("Demo Title")
+            .setContentText("Demo Text of Notification")
+            .setSmallIcon(R.drawable.zombatar)
+            .setAutoCancel(true)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .build()
 
+        notificationManager.notify(notificationId, notification)
+    }
 
 
 
