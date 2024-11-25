@@ -18,13 +18,7 @@ import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var retService: AlbumService
-
     private lateinit var binding: ActivityMainBinding
-
-    private val channelID = "com.example.viewspractice.demoNotification"
-
-    private lateinit var notificationManager : NotificationManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,13 +29,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        createNotificationChannel(channelID, "DemoChannel" , "Demo Notification Channel")
-
-        binding.btnNotification.setOnClickListener {
-            displayNotification()
-        }
 
 
 
@@ -49,26 +37,9 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun createNotificationChannel(id : String, name: String, channelDescription: String){
-        val importance = NotificationManager.IMPORTANCE_HIGH
-        val channel = NotificationChannel(id,name, importance).apply {
-             description = channelDescription
-        }
-        notificationManager.createNotificationChannel(channel)
-    }
 
-    private fun displayNotification(){
-        val notificationId = 48
-        val notification = NotificationCompat.Builder(this@MainActivity,channelID)
-            .setContentTitle("Demo Title")
-            .setContentText("Demo Text of Notification")
-            .setSmallIcon(R.drawable.zombatar)
-            .setAutoCancel(true)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .build()
 
-        notificationManager.notify(notificationId, notification)
-    }
+
 
 
 

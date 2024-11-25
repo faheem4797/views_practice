@@ -2,4 +2,6 @@
     <string name="app_name">Views Practice</string>
     <string name="students_email">Student\'s Email</string>
     <string name="students_name">Student\'s Name</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.google.devtools.ksp")
+    id("androidx.navigation.safeargs")
+
 }
 
 android {
@@ -60,8 +62,10 @@ dependencies {
     implementation (libs.retrofit)
     implementation (libs.gson)
     implementation (libs.retrofit2.converter.gson)
-
     implementation(libs.logging.interceptor)
+
+    implementation(libs.androidx.navigation.fragment)
+    implementation(libs.androidx.navigation.ui)
 
 
 
